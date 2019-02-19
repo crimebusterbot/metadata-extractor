@@ -1,22 +1,19 @@
 #!/usr/local/env python3
 
 import exifread
-import io
 import magic
-import pprint
 import urllib
 from urllib.request import urlopen
 
-import requests
-from bs4 import BeautifulSoup as bs
-
 
 class MetadataExtractor:
+    '''This class extracts data from files. Requires file url.'''
 
     def __init__(self, url):
         self.url = url
 
     def get_file_mime(self):
+        '''Extracts the MIME type of the file.'''
         request = urllib.request.Request(self.url)
         response = urlopen(request)
         mime_type = magic.from_buffer(response.readline())
@@ -24,8 +21,10 @@ class MetadataExtractor:
         return mime_type
 
     def get_file_exif(self, f):
-        resp = requests.get(self.url, stream=True)
-        return self._get_image_exif(f)
+        '''Extracts the file metadata.
+        Currently only supports local files.
+        '''
+        return self._get_file_exif(f)
 
 
     @staticmethod
@@ -45,23 +44,5 @@ class MetadataExtractor:
                     'MakerNote Tag 0x0000',
                 )
             }
-            #import pdb; pdb.set_trace()
 
         return tags_dict
-
-
-if __name__ == '__main__':
-    pp = pprint.PrettyPrinter(indent=4)
-
-    # test any file mime type
-    url = ('https://mosaic03.ztat.net/vgs/media/spp-media/w320'
-           '/e678931a754049c7b72d61d702d582f0'
-           '/20f9980b73af40509e4c6e5abf992bc2.jpeg')
-    extractor = MetadataExtractor(url)
-    print(extractor.get_file_mime())
-
-    # test exif of image
-    f = '/home/alexandr/Pictures/toyota-prius-2010-13.jpg'
-    exif_dict = extractor.get_file_exif(f)
-    pp.pprint(exif_dict)
-    #print(exif_dict['MakerNote Macromode'].values)
