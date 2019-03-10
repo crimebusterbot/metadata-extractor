@@ -14,6 +14,6 @@ if __name__ == '__main__':
     print(extractor.get_file_mime())
 
     # test exif of image
-    f = '/path/to/local/file.ext'
+    f = '20f9980b73af40509e4c6e5abf992bc2.jpeg'
     exif_dict = extractor.get_file_exif(f)
     pp.pprint(exif_dict)
